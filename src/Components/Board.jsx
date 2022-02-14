@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import Square from "./Square";
+import ThemeContextObject from "../Context/ThemeContext";
 
 const Board = (props) => {
+  const appliedTheme = useContext(ThemeContextObject);
+
   const nextPlayer = props.nextPlayer ? "X" : "O";
   const winner = props.calculateWinner(props.squares);
   const status = winner
     ? `The winner is: ${winner}`
     : `Next player: ${nextPlayer}`;
+
+  const themeClasses =
+    appliedTheme.name === "light"
+      ? "status light-theme-text"
+      : "status dark-theme-text";
 
   const renderSquare = (i) => {
     return (
@@ -19,7 +27,7 @@ const Board = (props) => {
 
   return (
     <div>
-      <div className="status">{status}</div>
+      <div className={themeClasses}>{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}

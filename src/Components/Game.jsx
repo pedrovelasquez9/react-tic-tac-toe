@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useContext } from "react";
 import Board from "./Board";
+import ThemeContext from "../Context/ThemeContext";
+import themes from "../Settings/Themes";
 
 const Game = () => {
+  const [actualTheme, setActualTheme] = useState(themes.dark);
+
   const [history, setHisory] = useState([{ squares: Array(9).fill(null) }]);
   const [xIsNext, setXIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
@@ -59,20 +63,34 @@ const Game = () => {
     });
   };
 
+  const changeTheme = () => {
+    actualTheme.name === "light"
+      ? setActualTheme(themes.dark)
+      : setActualTheme(themes.light);
+  };
+
+  const gameInfoClass =
+    actualTheme.name === "light" ? "light-theme-text" : "dark-theme-text";
+
   return (
-    <div className="game">
-      <div className="game-board">
-        <Board
-          nextPlayer={xIsNext}
-          squares={history[stepNumber].squares}
-          clickSquare={clickSquare}
-          calculateWinner={calculateWinner}
-        />
+    <ThemeContext.Provider value={actualTheme}>
+      <div className="game" style={{ background: actualTheme.background }}>
+        <div className="game-board">
+          <Board
+            nextPlayer={xIsNext}
+            squares={history[stepNumber].squares}
+            clickSquare={clickSquare}
+            calculateWinner={calculateWinner}
+          />
+        </div>
+        <div className={`game-info ${gameInfoClass}`}>
+          <ol>{returnHistoryToRender()}</ol>
+          <div>
+            <button onClick={changeTheme}>Change theme</button>
+          </div>
+        </div>
       </div>
-      <div className="game-info">
-        <ol>{returnHistoryToRender()}</ol>
-      </div>
-    </div>
+    </ThemeContext.Provider>
   );
 };
 
